@@ -1,6 +1,7 @@
 "use client";
 
 import "../styles/main.css";
+import "../styles/tableStyles.css";
 
 import React from "react";
 
@@ -16,6 +17,7 @@ import {
 } from "@tanstack/react-table";
 
 import { makeData, Person } from "../utils/makeData";
+import { TableRow } from "@/components/TableRow";
 
 function Home() {
   const rerender = React.useReducer(() => ({}), {})[1];
@@ -23,43 +25,37 @@ function Home() {
   const columns = React.useMemo<ColumnDef<Person>[]>(
     () => [
       {
-        header: "Name",
+        accessorKey: "firstName",
+        cell: (info) => info.getValue(),
         footer: (props) => props.column.id,
-        columns: [
-          {
-            accessorKey: "firstName",
-            cell: (info) => info.getValue(),
-            footer: (props) => props.column.id,
-          },
-          {
-            accessorFn: (row) => row.lastName,
-            id: "lastName",
-            cell: (info) => info.getValue(),
-            header: () => <span>Last Name</span>,
-            footer: (props) => props.column.id,
-          },
-          {
-            accessorKey: "age",
-            header: () => "Age",
-            footer: (props) => props.column.id,
-          },
+      },
+      {
+        accessorFn: (row) => row.lastName,
+        id: "lastName",
+        cell: (info) => info.getValue(),
+        header: () => <span>Last Name</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: "age",
+        header: () => "Age",
+        footer: (props) => props.column.id,
+      },
 
-          {
-            accessorKey: "visits",
-            header: () => <span>Visits</span>,
-            footer: (props) => props.column.id,
-          },
-          {
-            accessorKey: "status",
-            header: "Status",
-            footer: (props) => props.column.id,
-          },
-          {
-            accessorKey: "progress",
-            header: "Profile Progress",
-            footer: (props) => props.column.id,
-          },
-        ],
+      {
+        accessorKey: "visits",
+        header: () => <span>Visits</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: "progress",
+        header: "Profile Progress",
+        footer: (props) => props.column.id,
       },
     ],
     []
@@ -136,20 +132,7 @@ function Table({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => {
-            return (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  return (
-                    <td key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
+            return <TableRow row={row} />;
           })}
         </tbody>
       </table>
