@@ -32,7 +32,7 @@ tfoot th {
 .wrapper {
   width: 80%;
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 50px auto 0 auto;
 }
 
 .menu {
@@ -50,6 +50,7 @@ tfoot th {
   padding: 0 12px;
   border-radius: 10px;
   border: 2px solid #cbcfd6;
+  background-color: #fff;
   height: 27px;
 }
 
@@ -69,8 +70,8 @@ tfoot th {
   gap: 5px;
 }
 
-button:disabled,
-button[disabled] {
+.button-micro:disabled,
+.button-micro[disabled] {
   border: 2px solid #cbcfd6;
-  background-color: #cccccc;
+  background-color: #fff;
 }

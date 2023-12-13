@@ -1,5 +1,6 @@
 "use client";
 
+import "../components/UI/index.css";
 import "../styles/main.css";
 import "../styles/tableStyles.css";
 
@@ -16,54 +17,100 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { makeData, Person } from "../utils/makeData";
 import { TableRow } from "@/components/TableRow";
 import { ButtonMicro } from "@/components/UI/ButtonMicro";
+import { StateLabel } from "@/components/UI/StateLabel";
+import Image from "next/image";
+import { makeData, Person } from "../utils/makeData";
+
+import Complate from "../../public/labels/complete.svg";
+import Time from "../../public/labels/time.svg";
+import TimeIcon from "../../public/labels/time_mark.svg";
+
+const DraftLabel = () => {
+  return (
+    <StateLabel
+      bgColor="#C1C8D1"
+      borderColor="#C1C8D1"
+      icon={
+        <Image src={TimeIcon} alt="label image" width={20} height={15}></Image>
+      }
+      text="Draft"
+      textColor="6E7686"
+    />
+  );
+};
+
+const CompleteLabel = () => {
+  return (
+    <StateLabel
+      bgColor="#B8EF81"
+      borderColor="#B8EF81"
+      icon={
+        <Image src={Complate} alt="label image" width={20} height={20}></Image>
+      }
+      text="Complete"
+      textColor="#478524"
+    />
+  );
+};
+
+const Pending = () => {
+  return (
+    <StateLabel
+      bgColor="#FFE663"
+      borderColor="#FFE663"
+      icon={<Image src={Time} alt="label image" width={20} height={20}></Image>}
+      text="Pending"
+      textColor="#FF9900"
+    />
+  );
+};
 
 function Home() {
-  const rerender = React.useReducer(() => ({}), {})[1];
-
   const columns = React.useMemo<ColumnDef<Person>[]>(
     () => [
       {
-        accessorKey: "firstName",
-        cell: (info) => info.getValue(),
+        accessorFn: (row) => row.lastName,
+        id: "Request ID",
+        cell: (info) => <span>934040</span>,
+        header: () => <span>Request ID</span>,
         footer: (props) => props.column.id,
       },
       {
-        accessorFn: (row) => row.lastName,
-        id: "lastName",
-        cell: (info) => info.getValue(),
-        header: () => <span>Last Name</span>,
+        accessorKey: "Progress",
+        cell: (info) => {
+          const { index } = info.row;
+          if (index === 1) {
+            return <CompleteLabel />;
+          } else if (index === 2) {
+            return <Pending />;
+          } else {
+            return <DraftLabel />;
+          }
+        },
+
         footer: (props) => props.column.id,
       },
+
       {
         accessorKey: "age",
-        header: () => "Age",
+        header: () => "Item",
         footer: (props) => props.column.id,
+        cell: () => <span>Air Jordan 3 Off White</span>,
       },
 
       {
         accessorKey: "visits",
-        header: () => <span>Visits</span>,
+        header: () => <span>Created At</span>,
         footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: "progress",
-        header: "Profile Progress",
-        footer: (props) => props.column.id,
+        cell: () => <span>Dec 2, 11:45 PM</span>,
       },
     ],
     []
   );
 
   const [data, setData] = React.useState(() => makeData(100));
-  const refreshData = () => setData(() => makeData(100));
 
   return (
     <>

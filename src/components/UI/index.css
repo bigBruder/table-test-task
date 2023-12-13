@@ -1,0 +1,14 @@
+.state-label {
+  padding: 0 15px;
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 25px;
+}
+
+.state-label__text {
+  font-size: 12px;
+  padding-bottom: 4px;
+}
