@@ -11,7 +11,7 @@ export const TableRow: FC<Props> = ({ row }) => {
   return (
     <tr key={row.id} className="tableRow">
       {row.getVisibleCells().map((cell) => {
-        return <TableItem cell={cell} />;
+        return <TableItem cell={cell} key={cell.id} />;
       })}
     </tr>
   );

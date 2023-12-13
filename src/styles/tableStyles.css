@@ -4,3 +4,15 @@
   margin-bottom: auto;
   border-bottom: 2px solid #eceef1;
 }
+
+.tableHeader {
+  border-bottom: 2px solid #eceef1;
+}
+
+.tableHeaderItem {
+  border-right: none;
+  text-align: start;
+  padding-left: 0;
+  height: 31px;
+  color: #363a43;
+}

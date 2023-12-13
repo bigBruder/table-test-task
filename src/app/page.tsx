@@ -18,6 +18,7 @@ import {
 
 import { makeData, Person } from "../utils/makeData";
 import { TableRow } from "@/components/TableRow";
+import { ButtonMicro } from "@/components/UI/ButtonMicro";
 
 function Home() {
   const rerender = React.useReducer(() => ({}), {})[1];
@@ -61,8 +62,8 @@ function Home() {
     []
   );
 
-  const [data, setData] = React.useState(() => makeData(100000));
-  const refreshData = () => setData(() => makeData(100000));
+  const [data, setData] = React.useState(() => makeData(100));
+  const refreshData = () => setData(() => makeData(100));
 
   return (
     <>
@@ -72,13 +73,6 @@ function Home() {
           columns,
         }}
       />
-      <hr />
-      <div>
-        <button onClick={() => rerender()}>Force Rerender</button>
-      </div>
-      <div>
-        <button onClick={() => refreshData()}>Refresh Data</button>
-      </div>
     </>
   );
 }
@@ -101,27 +95,36 @@ function Table({
     debugTable: true,
   });
 
+  console.log(table.getState());
+
+  const startPaginatinoNum = table.getState().pagination.pageIndex + 1;
+  const paginationSize = table.getState().pagination.pageSize;
+
   return (
-    <div className="p-2">
+    <div className="wrapper">
       <div className="h-2" />
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <tr key={headerGroup.id} className="tableHeader">
               {headerGroup.headers.map((header) => {
                 return (
-                  <th key={header.id} colSpan={header.colSpan}>
+                  <th
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className="tableHeaderItem"
+                  >
                     {header.isPlaceholder ? null : (
                       <div>
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {header.column.getCanFilter() ? (
+                        {/* {header.column.getCanFilter() ? (
                           <div>
                             <Filter column={header.column} table={table} />
                           </div>
-                        ) : null}
+                        ) : null} */}
                       </div>
                     )}
                   </th>
@@ -132,74 +135,32 @@ function Table({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => {
-            return <TableRow row={row} />;
+            return <TableRow row={row} key={row.id} />;
           })}
         </tbody>
       </table>
-      <div className="h-2" />
-      <div className="flex items-center gap-2">
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {"<<"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {"<"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          {">"}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
-          {">>"}
-        </button>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </strong>
-        </span>
-        <span className="flex items-center gap-1">
-          | Go to page:
-          <input
-            type="number"
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              table.setPageIndex(page);
-            }}
-            className="border p-1 rounded w-16"
+
+      <div className="menu">
+        <div className="menu__page-info">
+          <span>
+            Viewing {startPaginatinoNum * paginationSize - paginationSize + 1}-
+            {paginationSize * startPaginatinoNum} of{" "}
+            {table.getPageCount() * paginationSize} results
+          </span>
+        </div>
+        <div className="navigation">
+          <ButtonMicro
+            text="Previous"
+            isDisabled={!table.getCanPreviousPage()}
+            onClick={() => table.previousPage()}
           />
-        </span>
-        <select
-          value={table.getState().pagination.pageSize}
-          onChange={(e) => {
-            table.setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
+          <ButtonMicro
+            text="Next"
+            isDisabled={!table.getCanNextPage()}
+            onClick={() => table.nextPage()}
+          />
+        </div>
       </div>
-      <div>{table.getRowModel().rows.length} Rows</div>
-      <pre>{JSON.stringify(table.getState().pagination, null, 2)}</pre>
     </div>
   );
 }
